@@ -1,0 +1,26 @@
+Netplan is the default network configuration tool in modern Ubuntu versions. Here's how to set a static IP:
+1.	Open the Netplan configuration file:
+The configuration files are located in /etc/netplan/. Typically, the file is named 01-netcfg.yaml or 50-cloud-init.yaml.
+
+sudo nano /etc/netplan/01-netcfg.yaml
+
+2.	Edit the file:
+Modify the file to include your static IP configuration. Here's an example:
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    enp0s3:  # Replace with your network interface name (use `ip a` to check)
+      dhcp4: no
+      addresses:
+        - 192.168.1.100/24  # Replace with your desired static IP and subnet mask
+      gateway4: 192.168.1.1  # Replace with your gateway IP
+      nameservers:
+        addresses:
+          - 8.8.8.8  # Replace with your DNS server(s)
+          - 8.8.4.4
+o	Replace enp0s3 with your actual network interface name (use ip a or ifconfig to find it).
+o	Adjust the IP address, subnet mask, gateway, and DNS servers as needed.
+3.	Apply the changes:
+After saving the file, apply the configuration with:
+sudo netplan apply
