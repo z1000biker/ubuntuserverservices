@@ -1,0 +1,36 @@
+To configure dual-stack IPv4 and IPv6 on an Ubuntu Server 24, you need to ensure both IPv4 and IPv6 addresses are assigned to your network interface. This can be done using Netplan, the default network configuration tool in modern Ubuntu versions. Below are the steps to set up dual-stack networking:
+________________________________________
+Step 1: Identify Your Network Interface
+1.	Run the following command to list your network interfaces:
+ip a
+Look for the interface you want to configure (e.g., enp0s3 or eth0).
+________________________________________
+Step 2: Edit the Netplan Configuration File
+1.	Open the Netplan configuration file. The file is typically located in /etc/netplan/ and may be named something like 01-netcfg.yaml or 50-cloud-init.yaml.
+sudo nano /etc/netplan/01-netcfg.yaml
+2.	Modify the file to include both IPv4 and IPv6 configurations. Here's an example:
+network:
+  version: 2
+  renderer: networkd  # or "NetworkManager" if you're using it
+  ethernets:
+    enp0s3:  # Replace with your network interface name
+      dhcp4: no  # Disable DHCP for IPv4
+      dhcp6: no  # Disable DHCP for IPv6
+      addresses:
+        - 192.168.1.100/24  # Replace with your desired IPv4 address and subnet mask
+        - 2001:db8::1/64     # Replace with your desired IPv6 address and prefix
+      gateway4: 192.168.1.1  # Replace with your IPv4 gateway
+      gateway6: 2001:db8::1  # Replace with your IPv6 gateway
+      nameservers:
+        addresses:
+          - 8.8.8.8        # IPv4 DNS server
+          - 2001:4860:4860::8888  # IPv6 DNS server
+o	Replace enp0s3 with your actual network interface name.
+o	Replace the IPv4 and IPv6 addresses, gateways, and DNS servers with your network's values.
+________________________________________
+Step 3: Apply the Configuration
+1.	Save the file and apply the changes:
+sudo netplan apply
+2.	Verify the configuration:
+ip a
+You should see both IPv4 and IPv6 addresses assigned to your interface.
